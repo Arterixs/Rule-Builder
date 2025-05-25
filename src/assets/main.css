@@ -1,8 +1,9 @@
 @import "tailwindcss";
+@import 'primeicons/primeicons.css';
 @import "./reset.css";
 
 html,
 body,
-#__app {
+#app {
   height: 100%;
 }
