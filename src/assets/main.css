@@ -1,0 +1,8 @@
+@import "tailwindcss";
+@import "./reset.css";
+
+html,
+body,
+#__app {
+  height: 100%;
+}
