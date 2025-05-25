@@ -2,7 +2,7 @@
 import { inject, onMounted, ref } from 'vue';
 import type { GroupRules } from '../types/rule-builder.types';
 import type { DialogModalInstance } from 'core/types';
-import ExpressionPreview from './ExpressionPreview.vue';
+import RulesPreview from './RulesPreview.vue';
 
 const groups = ref<GroupRules[]>([])
 
@@ -19,7 +19,7 @@ onMounted(() => {
 
 <template>
   <div class="flex flex-col gap-y-2 mt-2">
-    <ExpressionPreview
+    <RulesPreview
       v-for="group of groups"
       :key="group.id"
       :group="group"
