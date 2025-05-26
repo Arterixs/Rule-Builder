@@ -1,54 +1,87 @@
 <script setup lang="ts">
 import Select from 'primevue/select';
 import InputText from 'primevue/inputtext';
-import type { Field, FilterGroup, Operator } from '../types';
+import Card from 'primevue/card';
+import Button from 'primevue/button';
+import type { Field, Operator } from '../types';
 import { fieldOptions } from '../model/field-options';
 import { operatorOptions } from '../model/operator-options';
+import { useSendTrashConfirmFilter } from '../composable/use-send-trash-confirm';
+import IconGrab from './IconGrab.vue';
 
 defineProps<{
-  filter: FilterGroup
   disabled: boolean
+}>()
+
+const emit = defineEmits<{
+  (event: 'remove-filter'): void
 }>()
 
 const defineModelField = defineModel<Field | null>('field', { required: true })
 const defineModelOperator = defineModel<Operator | null>('operator', { required: true })
 const defineModelValue = defineModel<string>('value', { required: true })
 
+const sendEmitRemoveFilter = () => {
+  emit('remove-filter')
+}
+
+const { confirmFilter } = useSendTrashConfirmFilter(sendEmitRemoveFilter)
 </script>
 
 <template>
-  <section>
-    <h3>Filter</h3>
+  <Card class="flex flex-col gap-4 !ring-4 !bg-transparent">
+    <template #title>
+      <div class="flex items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+          <IconGrab />
 
-    <div>
-      <Select
-        v-model="defineModelField"
-        :options="fieldOptions"
-        :disabled="disabled"
-        option-label="name"
-        option-value="value"
-        placeholder="Select a Field"
-        class="w-full md:w-56"
-        show-clear
-      />
+          <h3 class="font-medium text-2xl">
+            Filter
+          </h3>
+        </div>
 
-      <Select
-        v-model="defineModelOperator"
-        :options="operatorOptions"
-        :disabled="disabled"
-        option-label="name"
-        option-value="value"
-        placeholder="Select a Operator"
-        class="w-full md:w-56"
-        show-clear
-      />
+        <Button
+          icon="pi pi-trash"
+          severity="danger"
+          variant="outlined"
+          raised
+          :disabled="disabled"
+          @click="confirmFilter"
+        />
+      </div>
+    </template>
 
-      <InputText
-        v-model="defineModelValue"
-        :disabled="disabled"
-        type="text"
-        placeholder="Value"
-      />
-    </div>
-  </section>
+    <template #content>
+      <div class="flex items-center gap-4">
+        <Select
+          v-model="defineModelField"
+          :options="fieldOptions"
+          :disabled="disabled"
+          option-label="name"
+          option-value="value"
+          placeholder="Field"
+          class="w-full md:w-56"
+          show-clear
+        />
+
+        <Select
+          v-model="defineModelOperator"
+          :options="operatorOptions"
+          :disabled="disabled"
+          option-label="name"
+          option-value="value"
+          placeholder="Operator"
+          class="w-full md:w-56"
+          show-clear
+        />
+
+        <InputText
+          v-model="defineModelValue"
+          :disabled="disabled"
+          type="text"
+          placeholder="Value"
+        />
+      </div>
+    </template>
+  </Card>
 </template>
