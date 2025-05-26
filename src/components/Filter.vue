@@ -3,14 +3,16 @@ import Select from 'primevue/select';
 import InputText from 'primevue/inputtext';
 import Card from 'primevue/card';
 import Button from 'primevue/button';
-import type { Field, Operator } from '../types';
+import type { Field, FilterGroup, Operator } from '../types';
 import { fieldOptions } from '../model/field-options';
 import { operatorOptions } from '../model/operator-options';
 import { useSendTrashConfirmFilter } from '../composable/use-send-trash-confirm';
 import IconGrab from './IconGrab.vue';
 
-defineProps<{
+const props = defineProps<{
+  filter: FilterGroup
   disabled: boolean
+  dragAndDropClass: string
 }>()
 
 const emit = defineEmits<{
@@ -25,7 +27,7 @@ const sendEmitRemoveFilter = () => {
   emit('remove-filter')
 }
 
-const { confirmFilter } = useSendTrashConfirmFilter(sendEmitRemoveFilter)
+const { confirmFilter } = useSendTrashConfirmFilter({ callback: sendEmitRemoveFilter, title: props.filter.name })
 </script>
 
 <template>
@@ -33,10 +35,13 @@ const { confirmFilter } = useSendTrashConfirmFilter(sendEmitRemoveFilter)
     <template #title>
       <div class="flex items-center justify-between gap-4">
         <div class="flex items-center gap-4">
-          <IconGrab />
+          <IconGrab
+            :is-disabled="disabled"
+            :class="dragAndDropClass"
+          />
 
           <h3 class="font-medium text-2xl">
-            Filter
+            {{ filter.name }}
           </h3>
         </div>
 

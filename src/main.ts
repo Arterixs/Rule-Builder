@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import './assets/main.css'
 import PrimeVue from 'primevue/config';
 import ConfirmationService from 'primevue/confirmationservice';
+import draggable from 'vuedraggable';
 import Aura from '@primeuix/themes/aura';
 import App from './App.vue'
 
@@ -12,4 +13,5 @@ app.use(PrimeVue, {
   }
 })
 app.use(ConfirmationService);
+app.component('Draggable', draggable)
 app.mount('#app')

@@ -23,6 +23,7 @@ export const enum Operator {
 export interface FilterGroup {
   id: UUID
   groupId: UUID
+  name: string,
   field: Field | null
   operator: Operator | null
   value: string

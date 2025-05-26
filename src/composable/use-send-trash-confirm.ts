@@ -40,12 +40,15 @@ export function useSendTrashConfirmGroup(options?: Options) {
   }
 }
 
-export const useSendTrashConfirmFilter = (callback?: () => void) => {
+export const useSendTrashConfirmFilter = (options?: Options) => {
   const confirm = useConfirm()
 
   const confirmFilter = () => {
+    const unwrappedTitle = isRef(options?.title) ? options.title.value : options?.title
+    const titleFilter = unwrappedTitle ? `"${unwrappedTitle}"` : 'filter'
+
     confirm.require({
-      message: 'Do you want to delete this filter?',
+      message: `Do you want to delete this ${titleFilter}?`,
       header: 'Danger Zone',
       icon: 'pi pi-info-circle',
       rejectProps: {
@@ -58,8 +61,8 @@ export const useSendTrashConfirmFilter = (callback?: () => void) => {
         severity: 'danger'
       },
       accept: () => {
-        if (callback) {
-          callback()
+        if (options?.callback) {
+          options.callback()
         }
       },
     });

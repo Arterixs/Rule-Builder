@@ -3,16 +3,18 @@ import { computed } from 'vue';
 import Button from 'primevue/button';
 import Panel from 'primevue/panel';
 import Filter from './Filter.vue'
+import EditTitle from './EditTitle.vue';
+import IconGrab from './IconGrab.vue';
+import DraggableList from './DraggableList.vue';
 import { TypeLogic, type FilterGroup, type GroupRules } from '../types';
 import { generateGroup } from '../utils/generate-group';
 import { generateFilter } from '../utils/generate-filter';
-import EditTitle from './EditTitle.vue';
-import ListGroup from './ListGroup.vue';
 import { useSendTrashConfirmGroup } from '../composable/use-send-trash-confirm';
-import IconGrab from './IconGrab.vue';
 
 const props = defineProps<{
   group: GroupRules
+  dragAndDropClass: string
+  isDisabledGroup?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -27,11 +29,11 @@ const modelActive = defineModel<boolean>('active', { required: true })
 const modelTitle = defineModel<string>('title', { required: true })
 
 const addSubgroup = () => {
-  modelSubgroup.value.push(generateGroup(props.group.id))
+  modelSubgroup.value.push(generateGroup(props.group.id, `Subgroup ${modelSubgroup.value.length + 1}`))
 }
 
 const addFilter = () => {
-  modelFilters.value.push(generateFilter(props.group.id))
+  modelFilters.value.push(generateFilter(props.group.id, `Filter ${modelFilters.value.length + 1}`))
 }
 
 const isTypeAND = computed(() => modelType.value === TypeLogic.AND)
@@ -61,7 +63,7 @@ const removeFilterById = (index: number) => {
   modelFilters.value.splice(index, 1)
 }
 
-
+const isDisabledGroup = computed(() => props.isDisabledGroup || modelLocked.value)
 </script>
 
 <template>
@@ -73,7 +75,11 @@ const removeFilterById = (index: number) => {
     <template #header>
       <header class="flex items-baseline justify-between w-full">
         <div class="w-full flex items-center gap-2">
-          <IconGrab class="mr-2" />
+          <IconGrab
+            class="mr-2"
+            :class="dragAndDropClass"
+            :is-disabled="isDisabledGroup"
+          />
 
           <h2 class="font-extrabold text-2xl">
             {{ group.name }}
@@ -86,7 +92,7 @@ const removeFilterById = (index: number) => {
             severity="primary"
             rounded
             raised
-            :disabled="group.isLocked"
+            :disabled="isDisabledGroup"
             @click="modelActive = !modelActive"
           />
 
@@ -94,7 +100,7 @@ const removeFilterById = (index: number) => {
             class="min-w-[60px]"
             :label="modelType"
             :severity="isTypeAND ? 'info' : 'success'"
-            :disabled="group.isLocked"
+            :disabled="isDisabledGroup"
             raised
             @click="changeGroupLogic"
           />
@@ -108,14 +114,14 @@ const removeFilterById = (index: number) => {
 
           <EditTitle
             :title="group.name"
-            :disabled="group.isLocked"
+            :disabled="isDisabledGroup"
             @change-title="changeTitle"
           />
 
           <Button
             icon="pi pi-trash"
             severity="danger"
-            :disabled="group.isLocked"
+            :disabled="isDisabledGroup"
             raised
             @click="confirmGroup"
           />
@@ -129,7 +135,7 @@ const removeFilterById = (index: number) => {
           label="Subgroup"
           severity="warn"
           icon="pi pi-plus"
-          :disabled="group.isLocked"
+          :disabled="isDisabledGroup"
           raised
           @click="addSubgroup"
         />
@@ -137,40 +143,49 @@ const removeFilterById = (index: number) => {
           label="Filter"
           severity="warn"
           icon="pi pi-plus"
-          :disabled="group.isLocked"
+          :disabled="isDisabledGroup"
           raised
           @click="addFilter"
         />
       </div>
 
-      <Filter
-        v-for="(filter, index) of group.filters"
-        :key="filter.id"
-        v-model:field="filter.field"
-        v-model:operator="filter.operator"
-        v-model:value="filter.value"
-        :disabled="group.isLocked || !group.isActive"
-        :class="[isTypeAND ? 'ring-sky-600' : 'ring-green-600']"
-        @remove-filter="removeFilterById(index)"
-      />
+      <DraggableList
+        v-if="modelFilters.length"
+        v-model:entity="modelFilters"
+      >
+        <template #default="{entity, index, classForDragAndDrop}">
+          <Filter
+            v-model:field="entity.field"
+            v-model:operator="entity.operator"
+            v-model:value="entity.value"
+            :filter="entity"
+            :disabled="isDisabledGroup || !modelActive"
+            :class="[isTypeAND ? 'ring-sky-600' : 'ring-green-600']"
+            :drag-and-drop-class="classForDragAndDrop"
+            @remove-filter="removeFilterById(index)"
+          />
+        </template>
+      </DraggableList>
 
-      <ListGroup
-        v-if="group.subgroups.length"
-        :groups="group.subgroups"
+      <DraggableList
+        v-if="modelSubgroup.length"
+        v-model:entity="modelSubgroup"
       >
         <template #default="slotProps">
           <Group
-            v-model:subgroup="slotProps.group.subgroups"
-            v-model:filter="slotProps.group.filters"
-            v-model:type="slotProps.group.type"
-            v-model:locked="slotProps.group.isLocked"
-            v-model:active="slotProps.group.isActive"
-            v-model:title="slotProps.group.name"
-            :group="slotProps.group"
+            v-model:subgroup="slotProps.entity.subgroups"
+            v-model:filter="slotProps.entity.filters"
+            v-model:type="slotProps.entity.type"
+            v-model:locked="slotProps.entity.isLocked"
+            v-model:active="slotProps.entity.isActive"
+            v-model:title="slotProps.entity.name"
+            :drag-and-drop-class="slotProps.classForDragAndDrop"
+            :group="slotProps.entity"
+            :is-disabled-group="isDisabledGroup"
             @remove-group="removeSubgroupByIndex(slotProps.index)"
           />
         </template>
-      </ListGroup>
+      </DraggableList>
     </section>
   </Panel>
 </template>

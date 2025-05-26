@@ -5,13 +5,13 @@ import { ConfirmDialog } from 'primevue';
 import Group from './components/Group.vue';
 import type { GroupRules } from './types';
 import { generateGroup } from './utils/generate-group';
-import ListGroup from './components/ListGroup.vue';
+import DraggableList from './components/DraggableList.vue';
 
 
 const groups = ref<GroupRules[]>([])
 
 const addNewGroup = () => {
-  groups.value.push(generateGroup())
+  groups.value.push(generateGroup(null, `Group ${groups.value.length + 1}`))
 }
 
 const removeGroupByIndex = (index: number) => {
@@ -32,20 +32,24 @@ const removeGroupByIndex = (index: number) => {
       />
     </header>
     <main class="w-full border grow p-2.5">
-      <ListGroup :groups="groups">
-        <template #default="{group, index}">
+      <DraggableList
+        v-if="groups.length"
+        v-model:entity="groups"
+      >
+        <template #default="{ entity, index, classForDragAndDrop, }">
           <Group
-            v-model:subgroup="group.subgroups"
-            v-model:filter="group.filters"
-            v-model:type="group.type"
-            v-model:locked="group.isLocked"
-            v-model:active="group.isActive"
-            v-model:title="group.name"
-            :group="group"
+            v-model:subgroup="entity.subgroups"
+            v-model:filter="entity.filters"
+            v-model:type="entity.type"
+            v-model:locked="entity.isLocked"
+            v-model:active="entity.isActive"
+            v-model:title="entity.name"
+            :drag-and-drop-class="classForDragAndDrop"
+            :group="entity"
             @remove-group="removeGroupByIndex(index)"
           />
         </template>
-      </ListGroup>
+      </DraggableList>
     </main>
   </div>
   <ConfirmDialog />
