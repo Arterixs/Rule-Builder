@@ -5,6 +5,7 @@ import DraggableList from 'core/components/DraggableList.vue';
 import type { GroupRules } from '../types/rule-builder.types';
 import { generateGroup } from '../helpers/generate-group';
 import Group from '../components/Group.vue';
+import { useSendPreviewModal } from '../composable/use-send-preview-modal';
 
 const groups = ref<GroupRules[]>([])
 
@@ -15,6 +16,8 @@ const addNewGroup = () => {
 const removeGroupByIndex = (index: number) => {
   groups.value.splice(index, 1)
 }
+
+const { showPreview } = useSendPreviewModal(groups)
 </script>
 
 <template>
@@ -23,11 +26,22 @@ const removeGroupByIndex = (index: number) => {
       <h1 class="text-4xl font-bold">
         Rule Builder
       </h1>
-      <Button
-        label="Add a new group"
-        severity="success"
-        @click="addNewGroup"
-      />
+
+      <div class="flex items-center gap-2.5">
+        <Button
+          label="Preview"
+          severity="contrast"
+          :icon="groups.length ? 'pi pi-eye' : 'pi pi-eye-slash'"
+          :disabled="!groups.length"
+          @click="showPreview"
+        />
+
+        <Button
+          label="Add a new group"
+          severity="success"
+          @click="addNewGroup"
+        />
+      </div>
     </header>
 
     <section class="w-full grow p-2.5 rounded-xl shadow-[0px_0px_13px_7px_rgba(34, 60, 80, 0.2)] overflow-y-auto ring-4">
