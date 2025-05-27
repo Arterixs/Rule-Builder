@@ -1,6 +1,4 @@
-import type { UUID as typeUUID } from 'node:crypto';
-
-export type UUID = typeUUID
+import type { UUID } from 'core/types'
 
 export const enum TypeLogic {
   AND = 'AND',

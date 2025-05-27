@@ -6,7 +6,6 @@ interface Options {
   title?: MaybeRef<string>
 }
 
-
 export function useSendTrashConfirmGroup(options?: Options) {
   const confirm = useConfirm()
 

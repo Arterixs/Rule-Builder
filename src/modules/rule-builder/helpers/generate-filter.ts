@@ -1,5 +1,6 @@
-import type { FilterGroup, UUID } from '../types'
-import { generateUUID } from './generate-uuid'
+import type { UUID } from 'core/types'
+import { generateUUID } from 'core/utils/generate-uuid'
+import type { FilterGroup } from '../types/rule-builder.types'
 
 export const generateFilter = (groupId: UUID, name = 'Filter'): FilterGroup => ({
   id: generateUUID(),

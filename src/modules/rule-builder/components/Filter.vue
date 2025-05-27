@@ -3,11 +3,11 @@ import Select from 'primevue/select';
 import InputText from 'primevue/inputtext';
 import Card from 'primevue/card';
 import Button from 'primevue/button';
-import type { Field, FilterGroup, Operator } from '../types';
+import IconGrab from 'core/components/IconGrab.vue';
+import type { Field, FilterGroup, Operator } from '../types/rule-builder.types';
+import { useSendTrashConfirmFilter } from '../composable/use-send-trash-confirm';
 import { fieldOptions } from '../model/field-options';
 import { operatorOptions } from '../model/operator-options';
-import { useSendTrashConfirmFilter } from '../composable/use-send-trash-confirm';
-import IconGrab from './IconGrab.vue';
 
 const props = defineProps<{
   filter: FilterGroup

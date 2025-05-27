@@ -2,14 +2,14 @@
 import { computed } from 'vue';
 import Button from 'primevue/button';
 import Panel from 'primevue/panel';
-import Filter from './Filter.vue'
+import DraggableList from 'core/components/DraggableList.vue';
+import IconGrab from 'core/components/IconGrab.vue';
 import EditTitle from './EditTitle.vue';
-import IconGrab from './IconGrab.vue';
-import DraggableList from './DraggableList.vue';
-import { TypeLogic, type FilterGroup, type GroupRules } from '../types';
-import { generateGroup } from '../utils/generate-group';
-import { generateFilter } from '../utils/generate-filter';
+import Filter from './Filter.vue';
+import { TypeLogic, type FilterGroup, type GroupRules } from '../types/rule-builder.types';
 import { useSendTrashConfirmGroup } from '../composable/use-send-trash-confirm';
+import { generateGroup } from '../helpers/generate-group';
+import { generateFilter } from '../helpers/generate-filter';
 
 const props = defineProps<{
   group: GroupRules

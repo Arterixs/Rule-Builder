@@ -1,3 +1,25 @@
+@supports (scrollbar-width: auto) {
+	* {
+		scrollbar-width: thin;
+		scrollbar-color: var(--color-gray-300) var(--color-gray-200);
+	}
+}
+
+@supports selector(::-webkit-scrollbar) {
+	*::-webkit-scrollbar-thumb {
+		border-radius: 99px;
+		background-color: var(--color-gray-300);
+	}
+	*::-webkit-scrollbar-track {
+		border-radius: 99px;
+		background-color: var(--color-gray-200);
+	}
+	*::-webkit-scrollbar {
+		max-width: 8px;
+		max-height: 4px;
+	}
+}
+
 *,
 *::before,
 *::after {
