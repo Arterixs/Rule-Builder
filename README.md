@@ -24,6 +24,8 @@
 
 ## About the project
 
+![product-screenshot](https://github.com/user-attachments/assets/52ab4cc3-f0a7-40f4-84cb-8ce52bb35bcb)
+
 Rule Builder is a tool or software component that allows users to visually or programmatically create, edit and manage logical rules, without the need for advanced programming knowledge.
 
 ### Built With
